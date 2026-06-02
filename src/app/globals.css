@@ -1,0 +1,58 @@
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  background: #1b1d1f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  color: #f5f5f5;
+  background: #1b1d1f;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.solution-map-marker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #f5f5f5;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow:
+    0 1px 2px #000,
+    0 -1px 2px #000,
+    1px 0 2px #000,
+    -1px 0 2px #000;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.solution-map-marker span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #121212;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.75);
+}
