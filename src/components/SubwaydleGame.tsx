@@ -395,6 +395,14 @@ function PuzzleHeader() {
   const { puzzle, newPuzzle } = useGame();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
+  const [refreshCooldown, setRefreshCooldown] = useState(false);
+
+  const handleNewPuzzle = () => {
+    if (refreshCooldown) return;
+    setRefreshCooldown(true);
+    newPuzzle();
+    setTimeout(() => setRefreshCooldown(false), 1000);
+  };
 
   return (
     <header className="mx-auto flex w-full max-w-[464px] flex-col gap-4">
@@ -405,7 +413,7 @@ function PuzzleHeader() {
         <div className="flex items-center gap-2 text-[#d0d0d0]">
           <button
             className="inline-flex h-7 w-7 items-center justify-center rounded text-[#d0d0d0] transition hover:bg-white/10"
-            onClick={newPuzzle}
+            onClick={handleNewPuzzle}
             title="Generate new puzzle"
             type="button"
           >

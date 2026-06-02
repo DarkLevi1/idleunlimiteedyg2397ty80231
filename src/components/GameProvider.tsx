@@ -13,7 +13,7 @@ import {
   mergeKeyboardStatus,
   scoreGuess,
 } from "@/lib/subwayEngine";
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 const MAX_ATTEMPTS = 6;
 const STATS_KEY = "unlocked-subwaydle-stats";
@@ -85,7 +85,13 @@ const saveStats = (stats: GameStats) => {
 };
 
 export function GameProvider({ children }: { children: React.ReactNode }) {
-  const [puzzle, setPuzzle] = useState<Puzzle>(generateInitialPuzzle);
+  const [puzzle, setPuzzle] = useState<Puzzle | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setPuzzle(generateInitialPuzzle());
+    setLoading(false);
+  }, []);
   const [currentGuess, setCurrentGuess] = useState<LineId[]>([]);
   const [guesses, setGuesses] = useState<SubmittedGuess[]>([]);
   const [keyboardStatus, setKeyboardStatus] = useState<Partial<Record<LineId, TileStatus>>>({});
@@ -139,6 +145,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    if (!puzzle) return;
+
     if (!isValidGuessCombo(currentGuess)) {
       setToast("Invalid trip");
       return;
@@ -180,7 +188,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<GameContextValue>(
     () => ({
-      puzzle,
+      puzzle: puzzle as Puzzle,
       currentGuess,
       guesses,
       keyboardStatus,
@@ -210,6 +218,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       toast,
     ],
   );
+
+  if (loading || !puzzle) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#1b1d1f]">
+        <p className="text-white text-lg">Loading...</p>
+      </div>
+    );
+  }
 
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
