@@ -176,6 +176,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   }, [currentGuess, gameStatus, guesses, puzzle, recordResult]);
 
   const newPuzzle = useCallback(() => {
+    if (guesses.length > 0 && gameStatus === "playing") {
+      recordResult(false, MAX_ATTEMPTS);
+    }
     setPuzzle(getFreshPuzzle());
     setCurrentGuess([]);
     setGuesses([]);
@@ -184,7 +187,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setToast(null);
     setHintFlash(null);
     hintUsedRef.current = false;
-  }, []);
+  }, [gameStatus, guesses.length, recordResult]);
 
   const giveUp = useCallback(() => {
     if (gameStatus !== "playing" || !puzzle) return;
