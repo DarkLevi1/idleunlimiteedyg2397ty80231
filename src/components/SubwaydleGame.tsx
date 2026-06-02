@@ -525,7 +525,7 @@ export function SubwaydleGame() {
   usePhysicalKeyboard();
 
   return (
-    <main className="min-h-screen bg-[#1b1d1f] px-3 pb-5 pt-2">
+    <main className="min-h-screen bg-[#1b1d1f] px-3 pt-[calc(0.5rem+env(safe-area-inset-top,0px))] pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))]">
       <Toast />
       <div className="mx-auto flex max-w-[520px] flex-col gap-3">
         <PuzzleHeader />
