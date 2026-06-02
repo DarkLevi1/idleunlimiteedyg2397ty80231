@@ -434,7 +434,7 @@ export const generatePuzzle = (): Puzzle => {
 };
 
 export const generateInitialPuzzle = (): Puzzle => {
-  for (const candidate of puzzleCandidates) {
+  for (const candidate of shuffle(puzzleCandidates)) {
     const route = findRouteForLines(candidate.start, candidate.end, candidate.solution);
     if (route && route.transfers.length === EXACT_TRANSFER_COUNT) {
       return {
