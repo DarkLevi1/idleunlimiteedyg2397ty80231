@@ -483,6 +483,48 @@ function usePhysicalKeyboard() {
   }, [addLine, deleteLine, gameStatus, submitGuess]);
 }
 
+function ActionButtons() {
+  const { giveUp, getHint, hint, gameStatus } = useGame();
+  const disabled = gameStatus !== "playing";
+
+  return (
+    <div className="mx-auto flex w-full max-w-[464px] flex-col items-center gap-2">
+      <div className="flex items-center gap-3">
+        <button
+          className={clsx(
+            "rounded px-4 py-1.5 text-sm font-bold transition",
+            disabled
+              ? "bg-[#3a3a3c] text-white/40 cursor-not-allowed"
+              : "bg-[#b43a3a] text-white hover:brightness-110"
+          )}
+          disabled={disabled}
+          onClick={giveUp}
+          type="button"
+        >
+          Give Up
+        </button>
+        <span className="text-[#3f4246] text-sm">|</span>
+        <button
+          className={clsx(
+            "rounded px-4 py-1.5 text-sm font-bold transition",
+            disabled
+              ? "bg-[#3a3a3c] text-white/40 cursor-not-allowed"
+              : "bg-[#3c9af5] text-white hover:brightness-110"
+          )}
+          disabled={disabled}
+          onClick={getHint}
+          type="button"
+        >
+          Hint
+        </button>
+      </div>
+      {hint && (
+        <p className="text-sm font-bold text-[#3c9af5]">{hint}</p>
+      )}
+    </div>
+  );
+}
+
 export function SubwaydleGame() {
   usePhysicalKeyboard();
 
@@ -495,6 +537,7 @@ export function SubwaydleGame() {
           <GuessGrid />
           <CompletionModal />
           <Keyboard />
+          <ActionButtons />
         </section>
       </div>
     </main>

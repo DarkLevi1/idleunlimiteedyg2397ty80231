@@ -12,6 +12,7 @@ import {
   isWinningScore,
   mergeKeyboardStatus,
   scoreGuess,
+  stationName,
 } from "@/lib/subwayEngine";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
@@ -42,10 +43,13 @@ type GameContextValue = {
   gameStatus: GameStatus;
   stats: GameStats;
   toast: string | null;
+  hint: string | null;
   addLine: (line: LineId) => void;
   deleteLine: () => void;
   submitGuess: () => void;
   newPuzzle: () => void;
+  giveUp: () => void;
+  getHint: () => void;
   resetStats: () => void;
   clearToast: () => void;
 };
@@ -98,6 +102,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [stats, setStats] = useState<GameStats>(loadStats);
   const [toast, setToast] = useState<string | null>(null);
+  const [hint, setHint] = useState<string | null>(null);
 
   const recordResult = useCallback((won: boolean, attemptsUsed: number) => {
     setStats((current) => {
@@ -176,7 +181,27 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setKeyboardStatus({});
     setGameStatus("playing");
     setToast(null);
+    setHint(null);
   }, []);
+
+  const giveUp = useCallback(() => {
+    if (gameStatus !== "playing" || !puzzle) return;
+    recordResult(false, MAX_ATTEMPTS);
+    setGameStatus("lost");
+    setToast(null);
+  }, [gameStatus, puzzle, recordResult]);
+
+  const getHint = useCallback(() => {
+    if (gameStatus !== "playing" || !puzzle) return;
+    const transfers = puzzle.route.transfers;
+    if (!hint) {
+      const firstTransfer = transfers[0];
+      setHint(`Transfer at ${stationName(firstTransfer.from)}`);
+    } else if (transfers.length > 1 && !hint.includes("second")) {
+      const secondTransfer = transfers[1];
+      setHint(`Transfer at ${stationName(transfers[0].from)} and ${stationName(secondTransfer.from)}`);
+    }
+  }, [gameStatus, puzzle, hint]);
 
   const clearToast = useCallback(() => setToast(null), []);
 
@@ -195,10 +220,13 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       gameStatus,
       stats,
       toast,
+      hint,
       addLine,
       deleteLine,
       submitGuess,
       newPuzzle,
+      giveUp,
+      getHint,
       resetStats,
       clearToast,
     }),
@@ -210,6 +238,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       gameStatus,
       guesses,
       keyboardStatus,
+      getHint,
+      giveUp,
+      hint,
       newPuzzle,
       puzzle,
       resetStats,
