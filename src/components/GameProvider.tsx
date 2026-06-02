@@ -13,7 +13,7 @@ import {
   mergeKeyboardStatus,
   scoreGuess,
 } from "@/lib/subwayEngine";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 const MAX_ATTEMPTS = 6;
 const STATS_KEY = "unlocked-subwaydle-stats";
@@ -34,7 +34,7 @@ export type GameStats = {
   guessDistribution: number[];
 };
 
-export type HintFlash = { position: number; line: LineId };
+export type HintFlash = { position: number; line: LineId; status: TileStatus };
 
 type GameContextValue = {
   puzzle: Puzzle;
@@ -183,6 +183,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setGameStatus("playing");
     setToast(null);
     setHintFlash(null);
+    hintUsedRef.current = false;
   }, []);
 
   const giveUp = useCallback(() => {
@@ -192,8 +193,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setToast(null);
   }, [gameStatus, puzzle, recordResult]);
 
+  const hintUsedRef = useRef(false);
+
   const getHint = useCallback(() => {
-    if (gameStatus !== "playing" || !puzzle) return;
+    if (gameStatus !== "playing" || !puzzle || hintUsedRef.current) return;
     const solution = puzzle.solution;
     const foundPositions = new Set<number>();
     for (const guess of guesses) {
@@ -204,7 +207,10 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const unfound = [0, 1, 2].filter((i) => !foundPositions.has(i));
     if (unfound.length === 0) return;
     const position = unfound[Math.floor(Math.random() * unfound.length)];
-    setHintFlash({ position, line: solution[position] });
+    const hintStatuses: TileStatus[] = ["exact", "equivalent", "present"];
+    const status = hintStatuses[Math.floor(Math.random() * hintStatuses.length)];
+    setHintFlash({ position, line: solution[position], status });
+    hintUsedRef.current = true;
     setTimeout(() => setHintFlash(null), 1500);
   }, [gameStatus, guesses, puzzle]);
 

@@ -21,3 +21,14 @@
   500 |       </div>
   501 |     </main>
 ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] Uncaught ReferenceError: useRef is not defined
+    at GameProvider (src/components/GameProvider.tsx:195:23)
+    at Home (src/app/page.tsx:8:5)
+  193 |   }, [gameStatus, puzzle, recordResult]);
+  194 |
+> 195 |   const hintUsedRef = useRef(false);
+      |                       ^
+  196 |
+  197 |   const getHint = useCallback(() => {
+  198 |     if (gameStatus !== "playing" || !puzzle || hintUsedRef.current) return;
+⚠ Fast Refresh had to perform a full reload due to a runtime error.

@@ -57,7 +57,7 @@ function GuessGrid() {
       const isHintFlash = isCurrent && hintFlash && hintFlash.position === columnIndex;
       return {
         line: submitted?.lines[columnIndex] ?? (isCurrent ? (isHintFlash ? hintFlash.line : currentGuess[columnIndex]) : undefined),
-        status: submitted?.statuses[columnIndex] ?? (isHintFlash ? "exact" : "empty"),
+        status: submitted?.statuses[columnIndex] ?? (isHintFlash ? hintFlash.status : "empty"),
         isHintFlash: !!isHintFlash,
       };
     });
