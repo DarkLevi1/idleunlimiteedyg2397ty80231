@@ -206,7 +206,7 @@ function MapboxMap({ puzzle, mode, onFallback }: SolutionMapProps & { mode: Excl
             [-73.3584, 41.1247],
           ],
           maxPitch: 0,
-          interactive: false,
+          interactive: true,
         });
         mapRef.current = map;
 
