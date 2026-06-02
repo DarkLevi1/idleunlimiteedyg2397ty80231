@@ -104,6 +104,14 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [stats, setStats] = useState<GameStats>(loadStats);
   const [toast, setToast] = useState<string | null>(null);
   const [hintFlash, setHintFlash] = useState<HintFlash | null>(null);
+  const hintTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hintUsedRef = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
+    };
+  }, []);
 
   const recordResult = useCallback((won: boolean, attemptsUsed: number) => {
     setStats((current) => {
@@ -169,9 +177,13 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     if (isWinningScore(statuses)) {
       recordResult(true, nextGuesses.length);
       setGameStatus("won");
+      setHintFlash(null);
+      if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
     } else if (nextGuesses.length >= MAX_ATTEMPTS) {
       recordResult(false, nextGuesses.length);
       setGameStatus("lost");
+      setHintFlash(null);
+      if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
     }
   }, [currentGuess, gameStatus, guesses, puzzle, recordResult]);
 
@@ -187,6 +199,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setToast(null);
     setHintFlash(null);
     hintUsedRef.current = false;
+    if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
   }, [gameStatus, guesses.length, recordResult]);
 
   const giveUp = useCallback(() => {
@@ -194,9 +207,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     recordResult(false, MAX_ATTEMPTS);
     setGameStatus("lost");
     setToast(null);
+    setHintFlash(null);
+    if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
   }, [gameStatus, puzzle, recordResult]);
-
-  const hintUsedRef = useRef(false);
 
   const getHint = useCallback(() => {
     if (gameStatus !== "playing" || !puzzle || hintUsedRef.current) return;
@@ -210,11 +223,35 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const unfound = [0, 1, 2].filter((i) => !foundPositions.has(i));
     if (unfound.length === 0) return;
     const position = unfound[Math.floor(Math.random() * unfound.length)];
-    const hintLine = solution[position];
-    const statuses = scoreGuess([hintLine, hintLine, hintLine], null, puzzle);
+
+    const hintType = (["exact", "equivalent", "present"] as const)[Math.floor(Math.random() * 3)];
+    let hintLine: LineId;
+
+    if (hintType === "exact") {
+      hintLine = solution[position];
+    } else if (hintType === "equivalent") {
+      const equivLines = LINE_IDS.filter((line) => {
+        if (line === solution[position]) return false;
+        const guess = Array.from({ length: 3 }, (_, i) => (i === position ? line : solution[i]));
+        const statuses = scoreGuess(guess, null, puzzle);
+        return statuses[position] === "equivalent";
+      });
+      hintLine = equivLines.length > 0
+        ? equivLines[Math.floor(Math.random() * equivLines.length)]
+        : solution[position];
+    } else {
+      const otherPositions = unfound.filter((i) => i !== position);
+      hintLine = otherPositions.length > 0
+        ? solution[otherPositions[Math.floor(Math.random() * otherPositions.length)]]
+        : solution[position];
+    }
+
+    const guess = Array.from({ length: 3 }, (_, i) => (i === position ? hintLine : solution[i]));
+    const statuses = scoreGuess(guess, null, puzzle);
     setHintFlash({ position, line: hintLine, status: statuses[position] });
     hintUsedRef.current = true;
-    setTimeout(() => setHintFlash(null), 1500);
+    if (hintTimeoutRef.current) clearTimeout(hintTimeoutRef.current);
+    hintTimeoutRef.current = setTimeout(() => setHintFlash(null), 1500);
   }, [gameStatus, guesses, puzzle]);
 
   const clearToast = useCallback(() => setToast(null), []);
