@@ -210,9 +210,9 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const unfound = [0, 1, 2].filter((i) => !foundPositions.has(i));
     if (unfound.length === 0) return;
     const position = unfound[Math.floor(Math.random() * unfound.length)];
-    const hintStatuses: TileStatus[] = ["exact", "equivalent", "present"];
-    const status = hintStatuses[Math.floor(Math.random() * hintStatuses.length)];
-    setHintFlash({ position, line: solution[position], status });
+    const hintLine = solution[position];
+    const statuses = scoreGuess([hintLine, hintLine, hintLine], null, puzzle);
+    setHintFlash({ position, line: hintLine, status: statuses[position] });
     hintUsedRef.current = true;
     setTimeout(() => setHintFlash(null), 1500);
   }, [gameStatus, guesses, puzzle]);
