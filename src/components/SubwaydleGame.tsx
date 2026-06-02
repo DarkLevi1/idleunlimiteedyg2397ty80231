@@ -33,11 +33,12 @@ const keyboardAliases: Record<string, LineId> = {
 
 const winPercent = (stats: GameStats) => (stats.played === 0 ? 0 : Math.round((stats.wins / stats.played) * 100));
 
-function GuessTile({ line, status = "empty" }: { line?: LineId; status?: TileStatus }) {
+function GuessTile({ line, status = "empty", flash = false }: { line?: LineId; status?: TileStatus; flash?: boolean }) {
   return (
     <div
       className={clsx(
         "flex h-[46px] w-[88px] items-center justify-center rounded-sm border-2 transition-colors sm:h-[46px] sm:w-[88px]",
+        flash && "animate-pulse",
         tileClass[status],
       )}
     >
@@ -47,15 +48,19 @@ function GuessTile({ line, status = "empty" }: { line?: LineId; status?: TileSta
 }
 
 function GuessGrid() {
-  const { guesses, currentGuess } = useGame();
+  const { guesses, currentGuess, hintFlash } = useGame();
   const rows = Array.from({ length: 6 }, (_, rowIndex) => {
     const submitted = guesses[rowIndex];
     const isCurrent = rowIndex === guesses.length;
 
-    return Array.from({ length: 3 }, (_, columnIndex) => ({
-      line: submitted?.lines[columnIndex] ?? (isCurrent ? currentGuess[columnIndex] : undefined),
-      status: submitted?.statuses[columnIndex] ?? "empty",
-    }));
+    return Array.from({ length: 3 }, (_, columnIndex) => {
+      const isHintFlash = isCurrent && hintFlash && hintFlash.position === columnIndex;
+      return {
+        line: submitted?.lines[columnIndex] ?? (isCurrent ? (isHintFlash ? hintFlash.line : currentGuess[columnIndex]) : undefined),
+        status: submitted?.statuses[columnIndex] ?? (isHintFlash ? "exact" : "empty"),
+        isHintFlash: !!isHintFlash,
+      };
+    });
   });
 
   return (
@@ -63,7 +68,7 @@ function GuessGrid() {
       {rows.map((row, rowIndex) => (
         <div className="grid grid-cols-3 justify-items-center gap-2" key={rowIndex}>
           {row.map((tile, columnIndex) => (
-            <GuessTile key={`${rowIndex}-${columnIndex}`} line={tile.line} status={tile.status} />
+            <GuessTile key={`${rowIndex}-${columnIndex}`} line={tile.line} status={tile.status} flash={tile.isHintFlash} />
           ))}
         </div>
       ))}
@@ -484,43 +489,34 @@ function usePhysicalKeyboard() {
 }
 
 function ActionButtons() {
-  const { giveUp, getHint, hint, gameStatus } = useGame();
+  const { giveUp, getHint, gameStatus } = useGame();
   const disabled = gameStatus !== "playing";
 
   return (
-    <div className="mx-auto flex w-full max-w-[464px] flex-col items-center gap-2">
-      <div className="flex items-center gap-3">
-        <button
-          className={clsx(
-            "rounded px-4 py-1.5 text-sm font-bold transition",
-            disabled
-              ? "bg-[#3a3a3c] text-white/40 cursor-not-allowed"
-              : "bg-[#b43a3a] text-white hover:brightness-110"
-          )}
-          disabled={disabled}
-          onClick={giveUp}
-          type="button"
-        >
-          Give Up
-        </button>
-        <span className="text-[#3f4246] text-sm">|</span>
-        <button
-          className={clsx(
-            "rounded px-4 py-1.5 text-sm font-bold transition",
-            disabled
-              ? "bg-[#3a3a3c] text-white/40 cursor-not-allowed"
-              : "bg-[#3c9af5] text-white hover:brightness-110"
-          )}
-          disabled={disabled}
-          onClick={getHint}
-          type="button"
-        >
-          Hint
-        </button>
-      </div>
-      {hint && (
-        <p className="text-sm font-bold text-[#3c9af5]">{hint}</p>
-      )}
+    <div className="mx-auto flex w-full max-w-[464px] items-center justify-center gap-3">
+      <button
+        className={clsx(
+          "text-sm font-bold transition",
+          disabled ? "text-white/30 cursor-not-allowed" : "text-[#b43a3a] hover:text-[#d04a4a]"
+        )}
+        disabled={disabled}
+        onClick={giveUp}
+        type="button"
+      >
+        Give Up
+      </button>
+      <span className="text-[#3f4246] text-sm">|</span>
+      <button
+        className={clsx(
+          "text-sm font-bold transition",
+          disabled ? "text-white/30 cursor-not-allowed" : "text-[#3c9af5] hover:text-[#5db0f7]"
+        )}
+        disabled={disabled}
+        onClick={getHint}
+        type="button"
+      >
+        Hint
+      </button>
     </div>
   );
 }

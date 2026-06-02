@@ -12,7 +12,6 @@ import {
   isWinningScore,
   mergeKeyboardStatus,
   scoreGuess,
-  stationName,
 } from "@/lib/subwayEngine";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
@@ -35,6 +34,8 @@ export type GameStats = {
   guessDistribution: number[];
 };
 
+export type HintFlash = { position: number; line: LineId };
+
 type GameContextValue = {
   puzzle: Puzzle;
   currentGuess: LineId[];
@@ -43,7 +44,7 @@ type GameContextValue = {
   gameStatus: GameStatus;
   stats: GameStats;
   toast: string | null;
-  hint: string | null;
+  hintFlash: HintFlash | null;
   addLine: (line: LineId) => void;
   deleteLine: () => void;
   submitGuess: () => void;
@@ -102,7 +103,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [stats, setStats] = useState<GameStats>(loadStats);
   const [toast, setToast] = useState<string | null>(null);
-  const [hint, setHint] = useState<string | null>(null);
+  const [hintFlash, setHintFlash] = useState<HintFlash | null>(null);
 
   const recordResult = useCallback((won: boolean, attemptsUsed: number) => {
     setStats((current) => {
@@ -181,7 +182,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     setKeyboardStatus({});
     setGameStatus("playing");
     setToast(null);
-    setHint(null);
+    setHintFlash(null);
   }, []);
 
   const giveUp = useCallback(() => {
@@ -193,15 +194,19 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
 
   const getHint = useCallback(() => {
     if (gameStatus !== "playing" || !puzzle) return;
-    const transfers = puzzle.route.transfers;
-    if (!hint) {
-      const firstTransfer = transfers[0];
-      setHint(`Transfer at ${stationName(firstTransfer.from)}`);
-    } else if (transfers.length > 1 && !hint.includes("second")) {
-      const secondTransfer = transfers[1];
-      setHint(`Transfer at ${stationName(transfers[0].from)} and ${stationName(secondTransfer.from)}`);
+    const solution = puzzle.solution;
+    const foundPositions = new Set<number>();
+    for (const guess of guesses) {
+      guess.statuses.forEach((status, i) => {
+        if (status === "exact" || status === "equivalent") foundPositions.add(i);
+      });
     }
-  }, [gameStatus, puzzle, hint]);
+    const unfound = [0, 1, 2].filter((i) => !foundPositions.has(i));
+    if (unfound.length === 0) return;
+    const position = unfound[Math.floor(Math.random() * unfound.length)];
+    setHintFlash({ position, line: solution[position] });
+    setTimeout(() => setHintFlash(null), 1500);
+  }, [gameStatus, guesses, puzzle]);
 
   const clearToast = useCallback(() => setToast(null), []);
 
@@ -220,7 +225,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       gameStatus,
       stats,
       toast,
-      hint,
+      hintFlash,
       addLine,
       deleteLine,
       submitGuess,
@@ -240,7 +245,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
       keyboardStatus,
       getHint,
       giveUp,
-      hint,
+      hintFlash,
       newPuzzle,
       puzzle,
       resetStats,
