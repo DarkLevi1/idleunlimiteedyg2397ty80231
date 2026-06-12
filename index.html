@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Geometry &amp; Chemistry Behind Screen Pixels</title>
+  <meta name="description" content="A scroll-driven 3D study of how geometry and chemistry work together inside screen pixels." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect x='2' y='6' width='8' height='20' rx='1' fill='%23ff3d5e'/><rect x='12' y='6' width='8' height='20' rx='1' fill='%232dffa3'/><rect x='22' y='6' width='8' height='20' rx='1' fill='%233d7bff'/></svg>" />
+</head>
+<body>
+
+  <!-- fixed WebGL stage -->
+  <div id="gl"></div>
+  <div class="blueprint"></div>
+  <div class="vignette"></div>
+
+  <!-- ============ HUD ============ -->
+  <div class="hud hud-top">
+    <a class="hud-id" href="#hero">
+      <span class="px-dots"><span></span><span></span><span></span></span>
+      ISM10B UNIT 5 PROJECT
+    </a>
+    <nav class="hud-nav" id="hudNav">
+      <a href="#briefing">BRIEF</a>
+      <a href="#flight">3D VIEW</a>
+      <a href="#molecules">MOLECULES</a>
+      <a href="#timeline">TIMELINE</a>
+      <a href="#data">DATA</a>
+      <a href="#end">REFS</a>
+    </nav>
+  </div>
+  <div class="hud hud-br">
+    <span class="sec-name" id="hudSec">00 — TITLE</span><br />
+    ISM10B
+  </div>
+  <div class="corner tl"></div><div class="corner tr"></div>
+  <div class="corner bl"></div><div class="corner br"></div>
+  <div class="scroll-beam"><div class="fill" id="beamFill"></div></div>
+
+  <main>
+
+    <!-- ============ 00 · HERO ============ -->
+    <section class="hero" id="hero">
+      <span class="tag">UNIT 5 FINAL PROJECT ISM 10B</span>
+      <h1>
+        <span class="row dim">The Geometry &amp;</span>
+        <span class="row">Chemistry Behind</span>
+        <span class="row grad">Screen Pixels</span>
+      </h1>
+      <p class="hero-sub">
+        How tiny shapes illuminate into our technology screens.
+      </p>
+    </section>
+
+    <!-- ============ 01 · BRIEFING ============ -->
+    <section id="briefing">
+      <div class="briefing">
+        <div class="head reveal">
+          <span class="tag">01 · Briefing</span>
+          <h2>TOPIC AND RESEARCH QUESTION</h2>
+        </div>
+
+        <div class="panel reveal">
+          <span class="mono-label">MOTIVATION FOR THE PROJECT TOPIC</span>
+          <h3>Why this intrigued me</h3>
+          <p>
+            I use screens every single day, but I never really stopped to think what was happening on the inside. From far away a monitor such as my own computers looks like one smooth image, but once you zoom in you realise millions of tiny pixels arranged in accurate geometric patterns are what form our technology screens. In this project I wanted to understand and educate my peers on how shapes, grids, light and unusual materials work together to create the photos and videos we see. This project goes on to show that geometry and chemistry aren't just things we learn in class but expand and work as one in the little things we use to drive our lives and stare at all day.
+          </p>
+        </div>
+
+        <div class="panel reveal d1">
+          <span class="mono-label">WHY THE QUESTION HOLDS</span>
+          <h3>A strong research question</h3>
+          <p>
+            This topic connects two subjects math, through grids, coordinates and ratios, and science through materials, light and chemistry allowing for a perfect final project for ISM10. It is also researchable because the physics and chemistry behind screens are very well documented. Screens are a huge advancement for billions of people every day which makes the topic relevant. This also allows for comparison because geometry chemistry, light and materials could each be studied and tested side by side.
+          </p>
+        </div>
+
+        <div class="q-banner panel reveal">
+          <span class="mono-label">MY RESEARCH QUESTION</span>
+          <blockquote>
+            “How are <span class="hl-g">geometry</span> and <span class="hl-c">chemistry</span>
+            able to work together in order to create the images we see on technology screens?”
+          </blockquote>
+          <div class="merits">
+            <span>THIS CONNECTS BOTH SUBJECTS</span><span>IS RESEARCHABLE</span>
+            <span>CONNECTS TO THE REAL WORLD TECH</span><span>COMPARATIVE</span>
+          </div>
+        </div>
+
+        <div class="pixel-strip reveal">
+          <div class="mini-pixel"><i></i><i></i><i></i></div>
+          <div class="ps-fact">
+            <span class="mono-label">UNIT</span>
+            <p><b>Pixel</b> = “picture element.” The smallest controllable dot of a digital image (Britannica, 2020). Each one splits into red, green and blue <b>subpixels</b> (Pickle, 2022).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 02 · 3D VIEW PHASE (scroll-scrubbed 3D) ============ -->
+    <section class="scrub" id="flight" style="height: 520vh;">
+      <div class="pin">
+        <div class="pin-head">
+          <span class="tag">02 · 3D View Phase</span>
+          <h2>Inside One LCD Pixel</h2>
+        </div>
+
+        <div class="stage-rail" id="stageRail">
+          <div class="sr-item"><i></i>VIEW 1</div>
+          <div class="sr-item"><i></i>VIEW 2</div>
+          <div class="sr-item"><i></i>VIEW 3</div>
+          <div class="sr-item"><i></i>VIEW 4</div>
+          <div class="sr-item"><i></i>VIEW 5</div>
+          <div class="sr-item"><i></i>VIEW 6</div>
+        </div>
+
+        <div class="stage-cards" id="stageCards">
+          <div class="stage-card panel on">
+            <div class="num">STAGE 01 / 06</div>
+            <h3>Inside the screen</h3>
+            <p>A sealed monitor panel forms together in layers, which consists of an aluminum front bezel, glowing liquid glass in the middle, and a matching back bezel. Geometry defines the structure of it, whilst chemistry creates the image you see through the manipulation of light.</p>
+          </div>
+          <div class="stage-card panel">
+            <div class="num">STAGE 02 / 06</div>
+            <h3>Front Bezel Lifts</h3>
+            <p>The front frame lifts away and flies upward, which reveals the glowing core beneath it (LCD, liquid crystal display). This layer is full geometry a rectangular border that keeps the panel in a flat state, and aligned with microscopic accuracy.</p>
+          </div>
+          <div class="stage-card panel">
+            <div class="num">STAGE 03 / 06</div>
+            <h3>The Core</h3>
+            <p>The center is a thick liquid crystal glass sheet, glowing with cyan and amber light inside, sealed inside is the blacklight and the color filter which is the display's chemistry into one bright pane.</p>
+          </div>
+          <div class="stage-card panel">
+            <div class="num">STAGE 04 / 06</div>
+            <h3>Inside the Core</h3>
+            <p>The particle field represents the liquid crystal itself, which consists of rod shaped molecules that are twisted into 90° helix that guide light. As soon as voltage is applied the molecules stand upright as the twist breaks apart and the pixel gets darker, so from brightness value 0 to 255 each one is basically controlled by a different voltage level.</p>
+          </div>
+          <div class="stage-card panel">
+            <div class="num">STAGE 05 / 06</div>
+            <h3>Pixel Shapes</h3>
+            <p>The camera moves closer to the screen until the image is separated into individual rectangular cells. Geometry is responsible for every pixel its shape, spacing, and its position while the glowing material underneath control how bright each cell becomes thanks to chemistry.</p>
+          </div>
+          <div class="stage-card panel">
+            <div class="num">STAGE 06 / 06</div>
+            <h3>Back Bezel</h3>
+            <p>The back frame falls apart and than all the layers snap into place, geometry positions every part on the grid while chemistry controls the colors and light. Multiply that by 2,073,600 pixels refreshing 60 times every second (60hz) and a full image appears on our technology screens.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 03 · MOLECULAR EXHIBIT ============ -->
+    <section class="scrub" id="molecules" style="height: 340vh;">
+      <div class="pin">
+        <div class="pin-head">
+          <span class="tag">03 · Molecular Exhibit</span>
+          <h2>Liquid Crystal</h2>
+        </div>
+
+        <div class="mol-cards" id="molCards">
+          <div class="mol-card panel on">
+            <span class="mono-label">PHASE 1 / 3 — DATA and ANALYSIS</span>
+            <h3>From Signal to Image</h3>
+            <p>Every single set frame the display controller sends voltage instructions to each point on the screens grid. In this 3d view each indivisual particle represents one piece of data, which floats without order until the screens material turn it into visible light + color.</p>
+          </div>
+          <div class="mol-card panel">
+            <span class="mono-label">PHASE 2 / 3 — Order + Shape</span>
+            <h3>Liquid Crystals Take Shape</h3>
+            <p>The points that were dissassembled and scattered around the screen form into rod shaped liquid crystal molecules, which is a strange state of matter that <b>moves like a liquid but lines up as if it were crystal</b>. Trapped between both glass plates the molecules naturally align themselves into a spiral shape, with each layer rotating a little more than the one below it until it twists a full 90 degrees from bottom to top. 
+            </p>
+          </div>
+          <div class="mol-card panel">
+            <span class="mono-label">PHASE 3 / 3 — FIELD APPLIED</span>
+            <h3>Voltage breaks said twist</h3>
+            <p>An electric field pulls in the liquid crystal rods upright, which breaks the spiral that was guiding light through the pixel. When that happens the pixel's light valve shuts. The molecules relax back into their twisted shape. For example on a gaming monitor this switching can happen up to 240 times per second. (known as a 240hz display)</p>
+          </div>
+        </div>
+
+        <div class="mol-readout">
+          LIGHT TRANSMISSION
+          <span class="big" id="molT">100%</span>
+          FIELD <span id="molField">OFF</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 04 · PIXEL TIMELINE ============ -->
+    <section class="scrub timeline" id="timeline" style="height: 300vh;">
+      <div class="pin">
+        <div class="pin-head">
+          <span class="tag">04 · The Pixel Timeline</span>
+          <h2>A Century of tiny pixels</h2>
+        </div>
+
+        <div class="tl-viewport">
+          <div class="tl-track" id="tlTrack">
+            <div class="tl-card">
+              <div class="ghost-year">1897</div>
+              <div class="year">1897</div>
+              <h3>Cathode ray tube</h3>
+              <p>Karl Ferdinand Braun a German physcist inventor builds the first CRT which is essentially an electron beam making a phosphor screen, every electronic display descends from this, including modern ones.</p>
+            </div>
+            <div class="tl-card">
+              <div class="ghost-year">1954</div>
+              <div class="year">1954</div>
+              <h3>Color lands</h3>
+              <p>In 1954 the RCA's CT 100 becomes one of the first color TVs used tiny groups of red, green and blue (RGB) to create phosphor dots which were used to create color, this is an early version of subpixels that are used today.</p>
+            </div>
+            <div class="tl-card">
+              <div class="ghost-year">1965</div>
+              <div class="year">1965</div>
+              <h3>“Pixel” gets its name</h3>
+              <p>An American engineer named Frederic Billingsley who worked at NASA's jet labratory published the word we now know and use "pixel" when he used it describe the small picture elements that made up images in space probes.</p>
+            </div>
+            <div class="tl-card">
+              <div class="ghost-year">1968</div>
+              <div class="year">1968</div>
+              <h3>The first LCD</h3>
+              <p>The first LCD (liquid crystal display) was showed off by George Heilmeir and his team at RCA, this essentially turned liquid crystals which is a strange state of matter studied in chemistry into something that could be used as a screen.</p>
+            </div>
+            <div class="tl-card">
+              <div class="ghost-year">1973</div>
+              <div class="year">1973</div>
+              <h3>LCD goes pocket size</h3>
+              <p>One of the first handheld uses of a LCD screen was Sharp's EL 805 calculator which brought liquid crystals to consumers, and ran on a tiny battery for months at a time since the valve only <i>blocks</i> light.</p>
+            </div>
+            <div class="tl-card">
+              <div class="ghost-year">1987</div>
+              <div class="year">1987</div>
+              <h3>VGA 640 × 480 (480p)</h3>
+              <p>In 1987 IBM's VGA set a new line for computer screens with 307,200 pixels and from that point on resolution became a number the average computer user recognized.</p>
+            </div>
+            <div class="tl-card">
+              <div class="ghost-year">2007</div>
+              <div class="year">2007</div>
+              <h3>The OLED era starts</h3>
+              <p>Sony releases a new ground breaking invention, the Oled display, no longer relying on the previous liquid crystal but rather a grid of organic light emitting diodes, short for OLED.</p>
+            </div>
+            <div class="tl-card">
+              <div class="ghost-year">2010</div>
+              <div class="year">2010</div>
+              <h3>Naked eyes limits</h3>
+              <p>Apples 326 PPI known as Retina, displays pack pixels smaller than the naked eye can resolve</p>
+            </div>
+            <div class="tl-card">
+              <div class="ghost-year">8K</div>
+              <div class="year">TODAY</div>
+              <h3>Millions of Pixels at Once</h3>
+              <p>Current modern 8k screens contain 7680 x 4320 pixels adding up to 33,177,600 tiny points of light, and as the geometry becomes more advanced the chemistry follows behind to control the light and color.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tl-ruler" id="tlRuler"><div class="cursor" id="tlCursor"></div></div>
+      </div>
+    </section>
+
+    <!-- ============ 05 · DATA SHEET ============ -->
+    <section id="data">
+      <div class="datasheet">
+        <div class="head reveal">
+          <span class="tag">05 · Data Sheet</span>
+          <h2>Synthesis &amp; Specifications</h2>
+        </div>
+
+        <div class="ds-grid">
+          <div class="panel reveal">
+            <span class="mono-label">GEOMETRY</span>
+            <table class="spec-table">
+              <tr><td>RESOLUTION</td><td class="fx">width × height → 1920 × 1080 = 2,073,600 px</td></tr>
+              <tr><td>AREA RULE</td><td class="fx">4K doubles both axes → 2 × 2 = 4× the pixels (8,294,400)</td></tr>
+            </table>
+          </div>
+
+          <div class="panel reveal">
+            <span class="mono-label">CALCULATIONS</span>
+            <table class="spec-table">
+              <tr><td>1080p</td><td class="fx">1920 × 1080 = 2,073,600 pixels</td></tr>
+              <tr><td>SUBPIXELS</td><td class="fx">2,073,600 × 3 = 6,220,800 red, green and blue subpixels</td></tr>
+              <tr><td>COLOR VALUES</td><td class="fx">256 × 256 × 256 = 16,777,216 possible colors</td></tr>
+              <tr><td>REFRESH</td><td class="fx">2,073,600 × 60 Hz = 124,416,000 pixel updates per second</td></tr>
+            </table>
+          </div>
+
+          <div class="panel reveal d1">
+            <span class="mono-label">SCIENCE</span>
+            <table class="spec-table">
+              <tr><td>1080p</td><td>Each pixel needs liquid crystal material, polarizers, filters, and controlled light to become visible.</td></tr>
+              <tr><td>SUBPIXELS</td><td>The color filter separates the white light into red, green and blue light sections.</td></tr>
+              <tr><td>COLOR VALUES</td><td>Different voltage levels change how much light gets to pass through the liquid crystal layer.</td></tr>
+              <tr><td>REACTIONS</td><td>The chemistry side does not rely on any chemical reactions, except for the original Cathode Ray Tube which used phosphors.</td></tr>
+            </table>
+          </div>
+
+          <div class="ds-statement reveal">
+            <span class="mono-label">HOW DO THEY COINCIDE</span>
+            <p>
+              Geometry is responsible for organizing pixels into a very accurate grid, and decides where each color belongs and appears, while chemistry controls the light inside each pixel and helps decide what appears on that same screen. Without geometry the pixels would be scattered without a clear image and without chemistry there would be a grid with nothing to show, nothing to spark the light into the images we see on a daily basis.
+            </p>
+          </div>
+
+          <div class="counters reveal">
+            <div class="counter"><div class="num" data-count="2073600">0</div><div class="lbl">px in 1080p</div></div>
+            <div class="counter"><div class="num" data-count="16.7" data-decimals="1" data-suffix="M">0</div><div class="lbl">colors / pixel</div></div>
+            <div class="counter"><div class="num" data-count="326">0</div><div class="lbl">PPI at retina limit</div></div>
+            <div class="counter"><div class="num" data-count="240" data-suffix=" Hz">0</div><div class="lbl">gaming refresh</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 06 · OUTRO + REFERENCES ============ -->
+    <section id="end">
+      <div class="outro">
+        <span class="tag reveal" style="justify-content:center;">06 · Conclusion</span>
+        <h2 class="reveal">A screen is not<br /><span class="grad">just glass</span></h2>
+        <p class="reveal d1">
+          Bye bye people.
+        </p>
+        <p class="reveal d2">
+         Ok
+        </p>
+
+        <div class="refs reveal">
+          <span class="mono-label">SOURCES IN APA FORMAT</span>
+          <div class="ref-item">Cathode Ray Tubes (CRTS). New Page 1. (n.d.). <a href="https://hartj.pages.iu.edu/FlatPanl/crts.htm">https://hartj.pages.iu.edu/FlatPanl/crts.htm</a></div>
+          <div class="ref-item">CT-100 Color Receiver (CTC2 Chassis, 1954). (n.d.). <i>Www.earlytelevision.org</i>. <a href="https://www.earlytelevision.org/Reitan/ct-100_gallery.html">https://www.earlytelevision.org/Reitan/ct-100_gallery.html</a></div>
+          <div class="ref-item">Encyclopaedia Britannica. (2020). Pixel. In <i>Encyclopaedia Britannica</i>. <a href="https://www.britannica.com/technology/pixel">https://www.britannica.com/technology/pixel</a></div>
+          <div class="ref-item">Microsoft Applied Sciences. (2026). <i>LCD fourth filter</i>. Microsoft. <a href="https://www.microsoft.com/applied-sciences/projects/lcd-fourth-filter-display-slideshow">https://www.microsoft.com/applied-sciences/projects/lcd-fourth-filter-display-slideshow</a></div>
+          <div class="ref-item">Optica. (2023). <i>Optica.org</i>. <a href="https://www.optica.org/History/Biographies/bios/George_H_Heilmeier">https://www.optica.org/History/Biographies/bios/George_H_Heilmeier</a></div>
+          <div class="ref-item">Peddie, J. (2021, May 20). Tribute: the father of the pixel. <i>Jon Peddie Research</i>. <a href="https://www.jonpeddie.com/news/tribute-the-father-of-the-pixel/">https://www.jonpeddie.com/news/tribute-the-father-of-the-pixel/</a></div>
+          <div class="ref-item">Pickle, B. (2022, October 17). Subpixel. <i>TechTerms.com</i>. <a href="https://techterms.com/definition/subpixel">https://techterms.com/definition/subpixel</a></div>
+          <div class="ref-item">Staff, T. (2007, December 18). First OLED TV. <i>MIT Technology Review</i>. <a href="https://www.technologyreview.com/2007/12/18/128424/first-oled-tv-2/">https://www.technologyreview.com/2007/12/18/128424/first-oled-tv-2/</a></div>
+          <div class="ref-item">U.S. Department of Energy. (2025). <i>OLED basics</i>. Energy.gov. <a href="https://www.energy.gov/cmei/ssl/oled-basics">https://www.energy.gov/cmei/ssl/oled-basics</a></div>
+          <div class="ref-item">World's First LCD Calculator. (2026). <i>Global.sharp</i>. <a href="https://global.sharp/corporate/info/his/only_one/item/t13.html">https://global.sharp/corporate/info/his/only_one/item/t13.html</a></div>
+        </div>
+
+        <div class="colophon">
+          ISM10B UNIT 5 PROJECT<br />
+          By: Ghaith Hamzah.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Three.js (global build, vendored so the 3D scene works offline) -->
+  <script src="js/vendor/three.min.js"></script>
+  <script src="js/experience.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
